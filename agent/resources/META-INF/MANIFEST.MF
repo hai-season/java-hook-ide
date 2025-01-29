@@ -1,0 +1,4 @@
+Premain-Class: org.hai.jhook.JHookAgent
+Agent-Class: org.hai.jhook.JHookAgent
+Can-Redefine-Classes: true
+Can-Retransform-Classes: true
