@@ -6,7 +6,7 @@ import java.security.ProtectionDomain;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class MyTransformer implements ClassFileTransformer {
+public class JHookTransformer implements ClassFileTransformer {
     Map<String, byte[]> map = new ConcurrentHashMap<>();
     public byte[] get(String className) {
         return map.get(className);
@@ -18,7 +18,6 @@ public class MyTransformer implements ClassFileTransformer {
         synchronized (this) {
             className = className.replaceAll("/", ".");
             map.putIfAbsent(className, classfileBuffer);
-            System.out.println("put " + className);
         }
         return null;
     }

@@ -1,10 +1,10 @@
 package org.hai.jhook;
 
-public class Demo2 {
+public class AppDemo {
     public static void main(String[] args) throws Exception {
         int i = 0;
         while (i < 100) {
-            new Demo2().loopCalc(i);
+            new AppDemo().loopCalc(i);
             Thread.sleep(1000L);
             i++;
         }

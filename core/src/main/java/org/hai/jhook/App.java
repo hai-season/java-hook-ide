@@ -34,7 +34,7 @@ public class App {
     public static void test1() throws Exception {
         List<VirtualMachineDescriptor> list = VirtualMachine.list();
         Optional<VirtualMachineDescriptor> currentVmd =
-                list.stream().filter(v -> v.displayName().equals("")).findFirst();
+                list.stream().filter(v -> v.displayName().contains("DBeaver")).findFirst();
         if (!currentVmd.isPresent()) {
             throw new RuntimeException("unknown error");
         }

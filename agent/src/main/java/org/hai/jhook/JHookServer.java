@@ -3,7 +3,6 @@ package org.hai.jhook;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.instrument.ClassDefinition;
-import java.lang.instrument.UnmodifiableClassException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Arrays;
@@ -21,7 +20,7 @@ public class JHookServer implements Runnable {
             System.out.println(client);
             ObjectInputStream input = new ObjectInputStream(client.getInputStream());
             ObjectOutputStream output = new ObjectOutputStream(client.getOutputStream());
-            MyTransformer trans = new MyTransformer();
+            JHookTransformer trans = new JHookTransformer();
             InstrumentationHolder.getInst().addTransformer(trans, true);
             while (!client.isClosed()) {
                 String cmdTypeStr = input.readUTF();
