@@ -34,14 +34,14 @@ public class App {
     public static void test1() throws Exception {
         List<VirtualMachineDescriptor> list = VirtualMachine.list();
         Optional<VirtualMachineDescriptor> currentVmd =
-                list.stream().filter(v -> v.displayName().contains("DBeaver")).findFirst();
+                list.stream().filter(v -> v.displayName().contains("demo-1.0.jar")).findFirst();
         if (!currentVmd.isPresent()) {
             throw new RuntimeException("unknown error");
         }
         VirtualMachineDescriptor desc = currentVmd.get();
         System.out.println("current desc: " + desc.displayName());
         VirtualMachine machine = VirtualMachine.attach(desc);
-        machine.loadAgent("E:\\DemoProject\\java-hook-ide\\agent\\out\\artifacts\\agent_jar\\agent.jar");
+        machine.loadAgent("E:\\DemoProject\\java-hook-ide\\agent\\target\\agent-1.0.jar");
         Socket socket = new Socket("127.0.0.1", 9090);
         ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
         ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
