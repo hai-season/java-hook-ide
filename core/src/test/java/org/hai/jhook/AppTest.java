@@ -1,4 +1,31 @@
 package org.hai.jhook;
 
-public class AppTest {
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtMethod;
+import junit.framework.TestCase;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+public class AppTest extends TestCase {
+    public void test1() throws Exception {
+        String file = "E:\\DemoProject\\java-hook-ide\\BIConfigService.class";
+        byte[] bytecode = Files.readAllBytes(new File(file).toPath());
+        ClassPool.getDefault().appendSystemPath().openClassfile("");
+        CtClass ctClass = ClassPool.getDefault().makeClass(new ByteArrayInputStream(bytecode));
+        CtMethod method = ctClass.getDeclaredMethod("checkLoginInfo");
+        method.insertBefore("smartbi.util.StrUtil.replace();");
+        bytecode = ctClass.toBytecode();
+        System.out.println(bytecode.length);
+    }
+
+    public void test2() throws Exception {
+        ClassPool pool = ClassPool.getDefault();
+        CtClass ctClass = pool.get("javax.servlet.http.HttpSession");
+        System.out.println(ctClass);
+    }
 }

@@ -17,8 +17,4 @@ public class JHookAgent {
         InstrumentationHolder.setInst(inst);
         new Thread(new JHookServer()).start();
     }
-
-    public static void main(String[] args) {
-        new Thread(new JHookServer()).start();
-    }
 }

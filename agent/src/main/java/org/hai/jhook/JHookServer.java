@@ -1,5 +1,8 @@
 package org.hai.jhook;
 
+import javassist.*;
+
+import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.instrument.ClassDefinition;
@@ -25,7 +28,6 @@ public class JHookServer implements Runnable {
             while (!client.isClosed()) {
                 String cmdTypeStr = input.readUTF();
                 System.out.println(cmdTypeStr);
-                System.out.println(CommandType.GET_ALL_CLASSES);
                 CommandType cmdType = CommandType.valueOf(cmdTypeStr);
                 if (cmdType == CommandType.GET_STATUS) {
 
@@ -40,12 +42,24 @@ public class JHookServer implements Runnable {
                     output.flush();
                 } else if (cmdType == CommandType.REDEFINE_CLASS) {
                     String className = input.readUTF();
+                    String methodName = input.readUTF();
+                    String location = input.readUTF();
+                    String snippets = input.readUTF();
                     Class[] classes = InstrumentationHolder.getInst().getAllLoadedClasses();
                     Optional<Class> clazz = Arrays.stream(classes).filter(c -> c.getName().equals(className)).findFirst();
                     Class aClass = clazz.get();
-                    int len = input.readInt();
-                    byte[] code = new byte[len];
-                    input.readFully(code);
+                    InstrumentationHolder.getInst().retransformClasses(aClass);
+                    byte[] code = trans.get(className);
+                    ClassPool pool = ClassPool.getDefault();
+                    pool.appendClassPath(new ClassClassPath(aClass));
+                    CtClass ctClass = pool.makeClass(new ByteArrayInputStream(code));
+                    CtMethod method = ctClass.getDeclaredMethod(methodName); // TODO 重名方法
+                    if (location.equals("before")) {
+                        method.insertBefore(snippets);
+                    } else if (location.equals("after")) {
+                        method.insertAfter(snippets);
+                    }
+                    code = ctClass.toBytecode();
                     InstrumentationHolder.getInst().redefineClasses(new ClassDefinition(aClass, code));
                 } else if (cmdType == CommandType.GET_ALL_CLASSES) {
                     Class[] classes = InstrumentationHolder.getInst().getAllLoadedClasses();

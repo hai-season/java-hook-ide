@@ -20,4 +20,13 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.javassist</groupId>
+        <artifactId>javassist</artifactId>
+        <version>3.30.2-GA</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 </project>
