@@ -15,10 +15,8 @@ public class JHookTransformer implements ClassFileTransformer {
     @Override
     public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined,
                             ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
-        synchronized (this) {
-            className = className.replaceAll("/", ".");
-            map.putIfAbsent(className, classfileBuffer);
-        }
+        className = className.replaceAll("/", ".");
+        map.putIfAbsent(className, classfileBuffer);
         return null;
     }
 }
