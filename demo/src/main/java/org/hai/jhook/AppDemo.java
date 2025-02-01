@@ -3,7 +3,7 @@ package org.hai.jhook;
 public class AppDemo {
     public static void main(String[] args) throws Exception {
         int i = 0;
-        while (i < 100) {
+        while (i < 10000) {
             new AppDemo().loopCalc(i);
             Thread.sleep(1000L);
             i++;
@@ -16,7 +16,7 @@ public class AppDemo {
     }
 
     public void loopCalc(int i) throws Exception {
-        System.out.println(calc(i, i));
+        calc(i, i);
     }
 
     public int calc(int first, int second) {

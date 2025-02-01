@@ -18,13 +18,26 @@ public class JHookClient {
 
     public static JHookClient connect() throws Exception {
         Socket client = new Socket("127.0.0.1", 9090);
-        return new JHookClient(client);
+        JHookClient jHookClient = new JHookClient(client);
+        System.out.println("writeStreamHeader");
+        jHookClient.output = new ObjectOutputStream(client.getOutputStream());
+        System.err.println("readStreamHeader");
+        jHookClient.input = new ObjectInputStream(client.getInputStream());
+        return jHookClient;
     }
 
-    public byte[] getClassByteCode() throws IOException {
-        output = new ObjectOutputStream(socket.getOutputStream());
-        input = new ObjectInputStream(socket.getInputStream());
+    public void disconnect() {
+        try {
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public byte[] getClassByteCode(String className) throws IOException {
         output.writeUTF(CommandType.GET_CLASS.name());
+        output.writeUTF(className);
+        output.flush();
         int len = input.readInt();
         byte[] data = new byte[len];
         input.readFully(data);

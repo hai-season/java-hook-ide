@@ -8,10 +8,7 @@ import javassist.CtClass;
 import javassist.CtMethod;
 import org.hai.jhook.bean.Result;
 import org.hai.jhook.client.JHookClient;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
@@ -51,15 +48,16 @@ public class JHookController {
     }
 
     @RequestMapping("/class/{className}")
-    public Result getClassByteCode(@PathVariable String className) throws Exception {
+    public Result getClassByteCode(@PathVariable("className") String className) throws Exception {
         JHookClient connect = JHookClient.connect();
-        byte[] data = connect.getClassByteCode();
+        byte[] data = connect.getClassByteCode(className);
         CtClass ctClass = ClassPool.getDefault().makeClass(new ByteArrayInputStream(data));
         CtMethod[] methods = ctClass.getDeclaredMethods();
         StringBuilder sb = new StringBuilder();
         for (CtMethod method : methods) {
             sb.append(method.getName()).append("\n");
         }
+        connect.disconnect();
         return Result.success().setData(sb.toString());
     }
 }

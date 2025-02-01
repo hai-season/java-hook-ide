@@ -23,28 +23,48 @@
         <div>
             pid: <input v-model="pid"/>
             <button @click="attach()">附加</button>
+            <div>{{attachResult}}</div>
+        </div>
+        <div>
+            <button @click="getClass()">获取class信息</button>
+            <div>{{classInfo}}</div>
         </div>
     </div>
 </body>
 <script>
+    const base = 'http://127.0.0.1:8080'
+
+    fetch(base + '/test')
+                    .then(data => data.json())
+                    .then(json => console.log(json))
+
     const app = Vue.createApp({
         data() {
             return {
                 jvmList: [],
-                pid: ''
+                pid: '',
+                classInfo: '',
+                attachResult: ''
             }
         },
         mounted() {
             var that = this
-            fetch('http://127.0.0.1:8080/listJvm')
+            fetch(base + '/listJvm')
                 .then(data => data.json())
                 .then(json => that.jvmList = json)
         },
         methods: {
             attach() {
-                fetch('http://127.0.0.1:8080/attach/' + this.pid)
+                var that = this
+                fetch(base + '/attach/' + this.pid)
                     .then(data => data.json())
-                    .then(json => that.jvmList = json)
+                    .then(json => that.attachResult = json)
+            },
+            getClass() {
+                var that = this
+                fetch(base + '/class/org.hai.jhook.AppDemo')
+                    .then(data => data.json())
+                    .then(json => that.classInfo = json)
             }
         }
     })
