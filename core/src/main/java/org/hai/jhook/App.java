@@ -2,45 +2,26 @@ package org.hai.jhook;
 
 import com.sun.tools.attach.VirtualMachine;
 import com.sun.tools.attach.VirtualMachineDescriptor;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtMethod;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 public class App {
     public static void main(String[] args) throws Exception {
-        test1();
-    }
-
-    public static void test2() throws Exception {
-        ClassPool pool = ClassPool.getDefault();
-        CtClass cc = pool.get("org.hai.jhook.Demo");
-        pool.importPackage("java.util.ArrayList");
-        CtMethod method = cc.getDeclaredMethod("say");
-        method.insertAfter("System.out.println(\"code enhan\");");
-        method.addCatch("System.out.println(new ArrayList()); return;", pool.get("java.lang.Exception"));
-        cc.writeFile("a");
-    }
-
-    public static void test1() throws Exception {
-        loadAgent();
-        redefine();
+       loadAgent();
+       redefine();
     }
 
     public static void loadAgent() throws Exception {
         List<VirtualMachineDescriptor> list = VirtualMachine.list();
         Optional<VirtualMachineDescriptor> currentVmd =
-                list.stream().filter(v -> v.displayName().contains("org.apache.catalina.startup.Bootstrap")).findFirst();
+                list.stream().filter(v -> v.displayName().contains("demo")).findFirst();
         if (!currentVmd.isPresent()) {
             throw new RuntimeException("unknown error");
         }

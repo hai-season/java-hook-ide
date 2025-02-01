@@ -15,6 +15,8 @@ public class JHookAgent {
         // TODO 根据参数启动服务器
         // TODO 避免重复启动
         InstrumentationHolder.setInst(inst);
-        new Thread(new JHookServer()).start();
+        Thread thread = new Thread(new JHookServer());
+        thread.setDaemon(true);
+        thread.start();
     }
 }

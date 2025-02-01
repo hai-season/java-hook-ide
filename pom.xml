@@ -15,7 +15,7 @@
     <module>core</module>
     <module>demo</module>
     <module>fernflower</module>
-      <module>common</module>
+    <module>common</module>
   </modules>
 
   <properties>
