@@ -43,4 +43,14 @@ public class JHookClient {
         input.readFully(data);
         return data;
     }
+
+    public String redefineClass(String className, String methodName, String position, Integer line, String code) throws IOException {
+        output.writeUTF(CommandType.REDEFINE_CLASS.name());
+        output.writeUTF(className);
+        output.writeUTF(methodName);
+        output.writeUTF(position);
+        output.writeUTF(code);
+        output.flush();
+        return input.readUTF();
+    }
 }

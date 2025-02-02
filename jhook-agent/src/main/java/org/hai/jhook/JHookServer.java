@@ -31,7 +31,12 @@ public class JHookServer implements Runnable {
                         JHookTransformer trans = new JHookTransformer();
                         InstrumentationHolder.getInst().addTransformer(trans, true);
                         while (!client.isClosed()) {
-                            String cmdTypeStr = input.readUTF();
+                            String cmdTypeStr = "";
+                            try {
+                                cmdTypeStr = input.readUTF();
+                            } catch (Exception e) {
+                                break;
+                            }
                             System.out.println(cmdTypeStr);
                             CommandType cmdType = CommandType.valueOf(cmdTypeStr);
                             if (cmdType == CommandType.GET_STATUS) {
@@ -57,6 +62,7 @@ public class JHookServer implements Runnable {
                                 byte[] code = trans.get(className);
                                 ClassPool pool = ClassPool.getDefault();
                                 pool.appendClassPath(new ClassClassPath(aClass));
+                                pool.getCtClass(className).defrost();
                                 CtClass ctClass = pool.makeClass(new ByteArrayInputStream(code));
                                 CtMethod method = ctClass.getDeclaredMethod(methodName); // TODO 重名方法
                                 if (location.equals("before")) {

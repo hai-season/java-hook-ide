@@ -43,7 +43,7 @@ public class JHookController {
         VirtualMachineDescriptor desc = currentVmd.get();
         System.out.println("current desc: " + desc.displayName());
         VirtualMachine machine = VirtualMachine.attach(desc);
-        machine.loadAgent("E:\\DemoProject\\java-hook-ide\\agent\\target\\agent-1.0-jar-with-dependencies.jar");
+        machine.loadAgent("E:\\DemoProject\\java-hook-ide\\jhook-agent\\target\\jhook-agent-1.0-jar-with-dependencies.jar");
         return Result.success();
     }
 
@@ -55,9 +55,21 @@ public class JHookController {
         CtMethod[] methods = ctClass.getDeclaredMethods();
         StringBuilder sb = new StringBuilder();
         for (CtMethod method : methods) {
-            sb.append(method.getName()).append("\n");
+            sb.append(method.getName()).append("、");
         }
         connect.disconnect();
         return Result.success().setData(sb.toString());
+    }
+
+    @RequestMapping("/redefine/{className}/{methodName}/{position}/{line}")
+    public Result redefineClass(@PathVariable("className") String className,
+                                @PathVariable("methodName") String methodName,
+                                @PathVariable("position") String position,
+                                @PathVariable(value = "line", required = false) Integer line,
+                                @RequestBody String code) throws Exception {
+        JHookClient connect = JHookClient.connect();
+        String result = connect.redefineClass(className, methodName, position, line, code);
+        connect.disconnect();
+        return Result.success().setData(result);
     }
 }

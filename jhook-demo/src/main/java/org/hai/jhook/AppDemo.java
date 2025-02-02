@@ -16,7 +16,7 @@ public class AppDemo {
     }
 
     public void loopCalc(int i) throws Exception {
-        calc(i, i);
+        System.out.println(calc(i, i));
     }
 
     public int calc(int first, int second) {
