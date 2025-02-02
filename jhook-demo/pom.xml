@@ -7,10 +7,11 @@
         <version>1.0</version>
     </parent>
 
-    <artifactId>demo</artifactId>
+    <artifactId>jhook-demo</artifactId>
+    <version>1.0</version>
     <packaging>jar</packaging>
 
-    <name>demo</name>
+    <name>jhook-demo</name>
     <url>https://gitee.com/haiseason/java-hook-ide.git</url>
 
     <properties>

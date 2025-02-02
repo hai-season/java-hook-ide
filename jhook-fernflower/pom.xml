@@ -7,10 +7,10 @@
         <version>1.0</version>
     </parent>
 
-    <artifactId>fernflower</artifactId>
+    <artifactId>jhook-fernflower</artifactId>
     <packaging>jar</packaging>
 
-    <name>fernflower</name>
+    <name>jhook-fernflower</name>
     <url>http://maven.apache.org</url>
 
     <properties>

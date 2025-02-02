@@ -8,11 +8,11 @@
     <version>1.0</version>
   </parent>
 
-  <artifactId>agent</artifactId>
+  <artifactId>jhook-agent</artifactId>
   <version>1.0</version>
   <packaging>jar</packaging>
 
-  <name>agent</name>
+  <name>jhook-agent</name>
   <url>https://gitee.com/haiseason/java-hook-ide.git</url>
 
   <properties>
@@ -22,7 +22,7 @@
   <dependencies>
     <dependency>
       <groupId>org.hai.jhook</groupId>
-      <artifactId>common</artifactId>
+      <artifactId>jhook-common</artifactId>
     </dependency>
 
     <dependency>

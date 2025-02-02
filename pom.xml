@@ -11,11 +11,11 @@
   <url>https://gitee.com/haiseason/java-hook-ide.git</url>
 
   <modules>
-    <module>agent</module>
-    <module>core</module>
-    <module>demo</module>
-    <module>fernflower</module>
-    <module>common</module>
+    <module>jhook-agent</module>
+    <module>jhook-core</module>
+    <module>jhook-demo</module>
+    <module>jhook-fernflower</module>
+    <module>jhook-common</module>
   </modules>
 
   <properties>
@@ -32,7 +32,7 @@
 
       <dependency>
         <groupId>org.hai.jhook</groupId>
-        <artifactId>common</artifactId>
+        <artifactId>jhook-common</artifactId>
         <version>1.0</version>
       </dependency>
     </dependencies>
