@@ -6,9 +6,12 @@ import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.instrument.ClassDefinition;
+import java.lang.reflect.Method;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 public class JHookServer implements Runnable {
@@ -106,8 +109,32 @@ public class JHookServer implements Runnable {
                                     }
                                 });
                                 output.flush();
+                            } else if (cmdType == CommandType.LIST_CLASS) {
+                                Class[] classes = InstrumentationHolder.getInst().getAllLoadedClasses();
+                                List<String> result = new ArrayList<>();
+                                for (Class<?> clazz : classes) {
+                                    String classLoader = clazz.getClassLoader() != null ? clazz.getClassLoader().getClass().toString() : "BootstrapClassLoader";
+                                    result.add(clazz.getName() + "[" + classLoader + "]");
+                                }
+                                output.writeObject(result);
+                                output.flush();
+                            } else if (cmdType == CommandType.LIST_METHOD) {
+                                String className = input.readUTF();
+                                // TODO 同名的不同类
+                                Class[] classes = InstrumentationHolder.getInst().getAllLoadedClasses();
+                                List<String> methodList = new ArrayList<>();
+                                for (Class<?> clazz : classes) {
+                                    if (clazz.getName().equals(className)) {
+                                        Method[] methods = clazz.getDeclaredMethods(); // TODO 其他方法
+                                        for (Method method : methods) {
+                                            methodList.add(method.getName());
+                                        }
+                                        break;
+                                    }
+                                }
+                                output.writeObject(methodList);
+                                output.flush();
                             }
-                            output.writeUTF("ok");
                             output.flush();
                         }
                     } catch (Exception e) {

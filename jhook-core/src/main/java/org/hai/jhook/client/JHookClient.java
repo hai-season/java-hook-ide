@@ -1,11 +1,13 @@
 package org.hai.jhook.client;
 
 import org.hai.jhook.CommandType;
+import org.jetbrains.java.decompiler.main.decompiler.ConsoleDecompiler;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.List;
 
 public class JHookClient {
     private Socket socket;
@@ -52,5 +54,18 @@ public class JHookClient {
         output.writeUTF(code);
         output.flush();
         return input.readUTF();
+    }
+
+    public List<String> listClass() throws IOException, ClassNotFoundException {
+        output.writeUTF(CommandType.LIST_CLASS.name());
+        output.flush();
+        return (List<String>) input.readObject();
+    }
+
+    public List<String> listMethod(String className) throws IOException, ClassNotFoundException {
+        output.writeUTF(CommandType.LIST_METHOD.name());
+        output.writeUTF(className);
+        output.flush();
+        return (List<String>) input.readObject();
     }
 }

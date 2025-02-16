@@ -8,13 +8,16 @@ import javassist.CtClass;
 import javassist.CtMethod;
 import org.hai.jhook.bean.Result;
 import org.hai.jhook.client.JHookClient;
+import org.jetbrains.java.decompiler.main.decompiler.ConsoleDecompiler;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.ByteArrayInputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.io.File;
+import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @CrossOrigin
@@ -22,14 +25,15 @@ import java.util.stream.Collectors;
 public class JHookController {
 
     @RequestMapping("/listJvm")
-    public List<Map<String, String>> listJvm() {
+    public Result listJvm() {
         List<VirtualMachineDescriptor> list = VirtualMachine.list();
-        return list.stream().map(v -> {
+        List<Map<String, String>> result = list.stream().map(v -> {
             Map<String, String> data = new HashMap<>();
             data.put("id", v.id());
             data.put("displayName", v.displayName());
             return data;
         }).collect(Collectors.toList());
+        return Result.success().setData(result);
     }
 
     @RequestMapping("/attach/{pid}")
@@ -43,8 +47,43 @@ public class JHookController {
         VirtualMachineDescriptor desc = currentVmd.get();
         System.out.println("current desc: " + desc.displayName());
         VirtualMachine machine = VirtualMachine.attach(desc);
-        machine.loadAgent("E:\\DemoProject\\java-hook-ide\\jhook-agent\\target\\jhook-agent-1.0-jar-with-dependencies.jar");
+        machine.loadAgent("F:\\java-hook-ide\\jhook-agent\\target\\jhook-agent-1.0-jar-with-dependencies.jar");
         return Result.success();
+    }
+
+    @RequestMapping("/listClass")
+    public Result listClass() throws Exception {
+        JHookClient connect = JHookClient.connect();
+        return Result.success().setData(connect.listClass());
+    }
+
+    @RequestMapping("/decompileClass/{className}")
+    public Result decompileClass(@PathVariable("className") String className) throws Exception {
+        JHookClient connect = JHookClient.connect();
+        byte[] classByteCode = connect.getClassByteCode(className);
+        File tempFile = File.createTempFile("jhook-decompile-tmp-file", className + ".class");
+        tempFile.deleteOnExit();
+        Files.write(Paths.get(tempFile.toURI()), classByteCode);
+
+        File resultTempFile = File.createTempFile("jhook-decompile-result-tmp-file", className);
+        resultTempFile.deleteOnExit();
+        String dir = resultTempFile.getParent() + "./jhook-decompile-dist/";
+        File file = new File(dir);
+        file.mkdirs();
+        ConsoleDecompiler.main(new String[] { tempFile.getAbsolutePath(), file.getAbsolutePath() });
+        Optional<File> first = Arrays.stream(file.listFiles()).filter(File::isFile)
+                .sorted(Comparator.comparing(File::lastModified).reversed())
+                .findFirst();
+        if (first.isPresent()) {
+            return Result.success().setData(Files.readString(first.get().toPath()));
+        }
+        return Result.success().setData("error");
+    }
+
+    @RequestMapping("/listMethod/{className}")
+    public Result listMethod(@PathVariable("className") String className) throws Exception {
+        JHookClient connect = JHookClient.connect();
+        return Result.success().setData(connect.listMethod(className));
     }
 
     @RequestMapping("/class/{className}")

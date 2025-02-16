@@ -46,12 +46,15 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
+import { useRouter } from 'vue-router'
 import api from '@/api/api'
 
 interface JavaProcess {
   id: string
   displayName: string
 }
+
+const router = useRouter()
 
 const type = ref('attach')
 const processData = ref([])
@@ -62,8 +65,8 @@ const server = reactive({
 })
 
 const refreshJavaProcess = async () => {
-  let data = await api.listJvm()
-  processData.value = data
+  let resp = await api.listJvm()
+  processData.value = resp.data
 }
 
 const handleCurrentChange = (val: JavaProcess | undefined) => {
@@ -71,7 +74,12 @@ const handleCurrentChange = (val: JavaProcess | undefined) => {
 }
 
 const attach = async () => {
-  api.attach(processId.value)
+  let resp = await api.attach(processId.value)
+  if (resp.success) {
+    router.push({
+      name: 'function'
+    })
+  }
 }
 
 refreshJavaProcess()
