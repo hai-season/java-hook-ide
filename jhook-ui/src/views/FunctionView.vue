@@ -10,7 +10,6 @@
         />
         <el-tree
           ref="treeRef"
-          style="max-width: 600px"
           lazy
           :data="classData"
           :props="classProps"
@@ -38,7 +37,7 @@ interface Clazz {
   methods?: Clazz[]
 }
 
-const filterClass = ref('jhook')
+const filterClass = ref('')
 const decompileCode = ref('')
 const treeRef = ref<InstanceType<typeof ElTree>>()
 
@@ -74,6 +73,9 @@ const init = async () => {
       name: clazz
     })
   }
+  setTimeout(() => {
+    filterClass.value = 'jhook'
+  }, 2000)
 }
 
 const loadNode = (node: Node, resolve: (data: Tree[]) => void) => {

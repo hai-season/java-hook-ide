@@ -50,7 +50,7 @@ import { useRouter } from 'vue-router'
 import api from '@/api/api'
 
 interface JavaProcess {
-  id: string
+  pid: string
   displayName: string
 }
 
@@ -70,7 +70,7 @@ const refreshJavaProcess = async () => {
 }
 
 const handleCurrentChange = (val: JavaProcess | undefined) => {
-  processId.value = val?.id
+  processId.value = val?.pid
 }
 
 const attach = async () => {

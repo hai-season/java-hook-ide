@@ -1,7 +1,8 @@
 package org.hai.jhook.client;
 
 import org.hai.jhook.CommandType;
-import org.jetbrains.java.decompiler.main.decompiler.ConsoleDecompiler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -10,7 +11,8 @@ import java.net.Socket;
 import java.util.List;
 
 public class JHookClient {
-    private Socket socket;
+    private final Logger logger = LoggerFactory.getLogger(JHookClient.class);
+    private final Socket socket;
     private ObjectInputStream input;
     private ObjectOutputStream output;
 
@@ -19,20 +21,20 @@ public class JHookClient {
     }
 
     public static JHookClient connect() throws Exception {
-        Socket client = new Socket("127.0.0.1", 9090);
+        Socket client = new Socket("127.0.0.1", 9090); // TODO
         JHookClient jHookClient = new JHookClient(client);
-        System.out.println("writeStreamHeader");
         jHookClient.output = new ObjectOutputStream(client.getOutputStream());
-        System.err.println("readStreamHeader");
         jHookClient.input = new ObjectInputStream(client.getInputStream());
         return jHookClient;
     }
 
     public void disconnect() {
         try {
+            input.close();
+            output.close();
             socket.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
     }
 

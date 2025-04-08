@@ -34,7 +34,7 @@ const listMethod = async (className: string) => {
 }
 
 const decompileClass = async (className: string) => {
-  return await http(`/decompileClass/${className}`)
+  return await http(`/decompile/${className}`)
 }
 
 export default {
