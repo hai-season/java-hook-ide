@@ -20,9 +20,10 @@
       </div>
     </div>
     <div class="jhook-func-view-right">
-      <pre>
+      <!-- <pre>
         {{ decompileCode }}
-      </pre>
+      </pre> -->
+      <div id="container"></div>
     </div>
   </div>
 </template>
@@ -31,6 +32,40 @@
 import { ref, reactive, watch } from 'vue'
 import api from '@/api/api'
 import type Node from 'element-plus/es/components/tree/src/model/node'
+import * as monaco from 'monaco-editor'
+import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
+import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
+import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
+import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
+import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
+
+self.MonacoEnvironment = {
+  getWorker(_, label) {
+    if (label === 'json') {
+      return new jsonWorker()
+    }
+    if (label === 'css' || label === 'scss' || label === 'less') {
+      return new cssWorker()
+    }
+    if (label === 'html' || label === 'handlebars' || label === 'razor') {
+      return new htmlWorker()
+    }
+    if (label === 'typescript' || label === 'javascript') {
+      return new tsWorker()
+    }
+    return new editorWorker()
+  }
+}
+
+let editorInst = null
+setTimeout(() => {
+  editorInst = monaco.editor.create(document.getElementById('container'), {
+    value: "function hello() {\n\talert('Hello world!');\n}",
+    language: 'java',
+    theme: 'vs-dark'
+  })
+}, 2000)
+
 
 interface Clazz {
   name: string
@@ -59,6 +94,7 @@ const handleNodeClick = async (data: Clazz, node: Node) => {
     let source = await api.decompileClass(name)
     console.log(source.data)
     decompileCode.value = source.data
+    editorInst.setValue(decompileCode.value)
   }
 }
 
@@ -116,5 +152,10 @@ init()
 .hook-func-view-left {
   display: flex;
   flex-direction: column;
+}
+
+#container {
+  width: 1000px;
+  height: 1000px;
 }
 </style>
