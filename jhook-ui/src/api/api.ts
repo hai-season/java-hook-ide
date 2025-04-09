@@ -2,7 +2,7 @@ import axios from 'axios'
 
 const instance = axios.create({
   baseURL: 'http://127.0.0.1:8080/',
-  timeout: 1000,
+  timeout: 10 * 1000,
   headers: {}
 })
 
@@ -37,10 +37,15 @@ const decompileClass = async (className: string) => {
   return await http(`/decompile/${className}`)
 }
 
+const redefineClass = async (option: any) => {
+  return await http(`/redefine`, option)
+}
+
 export default {
   listJvm,
   listClass,
   listMethod,
   decompileClass,
+  redefineClass,
   attach
 }

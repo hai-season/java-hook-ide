@@ -53,6 +53,7 @@ public class JHookClient {
         output.writeUTF(className);
         output.writeUTF(methodName);
         output.writeUTF(position);
+        output.writeInt(line);
         output.writeUTF(code);
         output.flush();
         return input.readUTF();

@@ -21,6 +21,7 @@ public class RedefineClassCommand implements ICommand {
             String className = input.readUTF();
             String methodName = input.readUTF();
             String location = input.readUTF();
+            Integer line = input.readInt();
             String snippets = input.readUTF();
             Class[] classes = InstrumentationHolder.getInst().getAllLoadedClasses();
             Optional<Class> clazz = Arrays.stream(classes).filter(c -> c.getName().equals(className)).findFirst();
@@ -36,6 +37,12 @@ public class RedefineClassCommand implements ICommand {
                 method.insertBefore(snippets);
             } else if (location.equals("after")) {
                 method.insertAfter(snippets);
+            } else if (location.equals("total")) {
+                method.setBody(snippets);
+            } else if (location.equals("exception")) {
+                method.addCatch(snippets, pool.get("java.lang.Exception"));
+            } else if (location.equals("line")) {
+                method.insertAt(line, snippets);
             }
             code = ctClass.toBytecode();
             InstrumentationHolder.getInst().redefineClasses(new ClassDefinition(aClass, code));

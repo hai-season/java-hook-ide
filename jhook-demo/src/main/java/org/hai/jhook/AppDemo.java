@@ -4,7 +4,11 @@ public class AppDemo {
     public static void main(String[] args) throws Exception {
         int i = 0;
         while (true) {
-            new AppDemo().loopCalc(i);
+            try {
+                new AppDemo().loopCalc(i);
+            } catch (Exception e) {
+                System.out.println("=== error occur");
+            }
             Thread.sleep(1000L);
             i++;
         }
@@ -15,8 +19,9 @@ public class AppDemo {
         int i = 1 / 0;
     }
 
-    public void loopCalc(int i) throws Exception {
+    public void loopCalc(int i) {
         System.out.println(calc(i, i));
+        int j = 1 / 0;
     }
 
     public int calc(int first, int second) {
