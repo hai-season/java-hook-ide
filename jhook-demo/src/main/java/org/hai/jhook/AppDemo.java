@@ -21,7 +21,6 @@ public class AppDemo {
 
     public void loopCalc(int i) {
         System.out.println(calc(i, i));
-        int j = 1 / 0;
     }
 
     public int calc(int first, int second) {

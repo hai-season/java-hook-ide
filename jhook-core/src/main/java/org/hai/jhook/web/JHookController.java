@@ -22,6 +22,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+@RequestMapping("/api")
 @RestController
 public class JHookController {
     private final Logger logger = LoggerFactory.getLogger(JHookController.class);

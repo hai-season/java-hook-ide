@@ -11,9 +11,11 @@ import java.io.ObjectOutputStream;
 import java.lang.instrument.ClassDefinition;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class RedefineClassCommand implements ICommand {
     private static final CommandType type = CommandType.REDEFINE_CLASS;
+    private static final ConcurrentHashMap<String, byte[]> classCodeMap = new ConcurrentHashMap<>(); // TODO 并发处理
 
     @Override
     public void execute(ObjectInputStream input, ObjectOutputStream output) {
@@ -23,11 +25,19 @@ public class RedefineClassCommand implements ICommand {
             String location = input.readUTF();
             Integer line = input.readInt();
             String snippets = input.readUTF();
+            if (location.equals("reset")) {
+                classCodeMap.remove(className);
+            }
             Class[] classes = InstrumentationHolder.getInst().getAllLoadedClasses();
             Optional<Class> clazz = Arrays.stream(classes).filter(c -> c.getName().equals(className)).findFirst();
             Class aClass = clazz.get();
-            InstrumentationHolder.getInst().retransformClasses(aClass);
-            byte[] code = JHookTransformer.getInstance().get(className);
+            byte[] code = null;
+            if (classCodeMap.containsKey(className)) {
+                code = classCodeMap.get(className);
+            } else {
+                InstrumentationHolder.getInst().retransformClasses(aClass);
+                code = JHookTransformer.getInstance().get(className);
+            }
             ClassPool pool = ClassPool.getDefault();
             pool.appendClassPath(new ClassClassPath(aClass));
             pool.getCtClass(className).defrost();
@@ -45,7 +55,9 @@ public class RedefineClassCommand implements ICommand {
                 method.insertAt(line, snippets);
             }
             code = ctClass.toBytecode();
+            classCodeMap.put(className, code);
             InstrumentationHolder.getInst().redefineClasses(new ClassDefinition(aClass, code));
+            output.writeUTF("ok");
         } catch (Exception e) {
             e.printStackTrace();
         }

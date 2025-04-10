@@ -30,7 +30,9 @@
             <div id="depcompile-code"></div>
           </div>
           <div class="redefine">
-            插入点:
+            <div>当前类：{{ redefineData.className }}.{{ redefineData.methodName }}</div>
+            <div><el-button type="primary" plain @click="applyRedefine('reset')">重置</el-button></div>
+            <div>插入点：</div>
             <div class="redefine-point">
               <div>方法开始前：</div>
               <div class="redefine-editor" id="redefine-point-before-content"></div>
@@ -251,6 +253,8 @@ const applyRedefine = (type: string) => {
     case 'line':
       redefineData.code = lineEditor.getValue()
       break;
+    case 'reset':
+      redefineData.code = ''
     default:
       break;
   }
