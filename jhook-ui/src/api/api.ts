@@ -41,11 +41,16 @@ const redefineClass = async (option: any) => {
   return await http(`/redefine`, option)
 }
 
+const connect = async (option: any) => {
+  return await http(`/connect`, option)
+}
+
 export default {
   listJvm,
   listClass,
   listMethod,
   decompileClass,
   redefineClass,
-  attach
+  attach,
+  connect
 }

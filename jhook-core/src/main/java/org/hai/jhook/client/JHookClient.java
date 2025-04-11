@@ -11,6 +11,8 @@ import java.net.Socket;
 import java.util.List;
 
 public class JHookClient {
+    private static String ip = "127.0.0.1";
+    private static int port = 7788;
     private final Logger logger = LoggerFactory.getLogger(JHookClient.class);
     private final Socket socket;
     private ObjectInputStream input;
@@ -21,11 +23,16 @@ public class JHookClient {
     }
 
     public static JHookClient connect() throws Exception {
-        Socket client = new Socket("127.0.0.1", 9090); // TODO
+        Socket client = new Socket(ip, port);
         JHookClient jHookClient = new JHookClient(client);
         jHookClient.output = new ObjectOutputStream(client.getOutputStream());
         jHookClient.input = new ObjectInputStream(client.getInputStream());
         return jHookClient;
+    }
+
+    public static void setConnectInfo(String ip, int port) {
+        JHookClient.ip = ip;
+        JHookClient.port = port;
     }
 
     public void disconnect() {

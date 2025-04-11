@@ -5,6 +5,7 @@ import com.sun.tools.attach.VirtualMachineDescriptor;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
+import org.hai.jhook.bean.ConnectInfo;
 import org.hai.jhook.bean.Redefine;
 import org.hai.jhook.bean.Result;
 import org.hai.jhook.client.JHookClient;
@@ -50,7 +51,13 @@ public class JHookController {
         VirtualMachineDescriptor desc = currentVmd.get();
         logger.info("current desc: {}", desc.displayName());
         VirtualMachine machine = VirtualMachine.attach(desc);
-        machine.loadAgent("F:\\java-hook-ide\\jhook-agent\\target\\jhook-agent-1.0-jar-with-dependencies.jar");
+        machine.loadAgent("./jhook-agent.jar");
+        return Result.success();
+    }
+
+    @RequestMapping("/connect")
+    public Result connect(@RequestBody ConnectInfo connectInfo) throws Exception {
+        JHookClient.setConnectInfo(connectInfo.getIp(), connectInfo.getPort());
         return Result.success();
     }
 

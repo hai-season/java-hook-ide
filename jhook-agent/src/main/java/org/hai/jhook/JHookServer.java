@@ -31,7 +31,7 @@ public class JHookServer implements Runnable {
 
     private void startServer() throws IOException {
         InstrumentationHolder.getInst().addTransformer(JHookTransformer.getInstance(), true);
-        ServerSocket server = new ServerSocket(9090);
+        ServerSocket server = new ServerSocket(7788);
         while (true) {
             Socket client = server.accept();
             new Thread(() -> {

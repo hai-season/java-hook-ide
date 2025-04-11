@@ -36,7 +36,7 @@
             <el-input v-model="server.port" type="text" autocomplete="off" />
           </el-form-item>
           <el-form-item>
-            <el-button type="primary">Attach</el-button>
+            <el-button type="primary" @click="connect">Attach</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -75,6 +75,15 @@ const handleCurrentChange = (val: JavaProcess | undefined) => {
 
 const attach = async () => {
   let resp = await api.attach(processId.value)
+  if (resp.success) {
+    router.push({
+      name: 'function'
+    })
+  }
+}
+
+const connect = async () => {
+  let resp = await api.connect(server)
   if (resp.success) {
     router.push({
       name: 'function'
